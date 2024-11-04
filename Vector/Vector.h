@@ -49,7 +49,7 @@ class Vector
 
     /* Insertion */
     void insertItem(int rank, const Item &element);
-    void insertItem(const Item &element) { insertItem(_size, element); }
+    void insertItem(const Item &element);
 
     /* Remove */
     int removeItem(int lo, int hi);
@@ -63,18 +63,45 @@ class Vector
         Iterator(T *ptr) : BaseIterator(ptr) {}
         ~Iterator() {}
 
+        Iterator(const Iterator &it) : BaseIterator(it._ptr) {}
+        Iterator(Iterator &&it) : BaseIterator(it._ptr) { it._ptr = nullptr; }
+
+        Iterator& operator=(const Iterator &it)
+        {
+          _ptr = it._ptr;
+          return *this;
+        }
+        Iterator& operator=(Iterator &&it)
+        {
+          _ptr = it._ptr;
+          it._ptr = nullptr;
+          return *this;
+        }
+
+        Iterator& operator[](int n) { return *(current + n); }
+
         Iterator& operator++() override 
         {
-          *_ptr++;
+          ++_ptr;
           return *this;
         }
         Iterator& operator--() override 
         {
-          *_ptr--;
+          --_ptr;
           return *this;
         }
-        Iterator& operator++(int) override { return ++(*this); }
-        Iterator& operator--(int) override { return --(*this); }
+        Iterator& operator++(int) override 
+        { 
+          Iterator temp = *this;
+          ++_ptr;
+          return tmp;
+        }
+        Iterator& operator--(int) override
+        {
+          Iterator temp = *this;
+          --_ptr;
+          return temp;
+        }
 
         /* Random Access Behavior */
         Iterator& operator+=(ptrdiff n)
@@ -87,7 +114,14 @@ class Vector
           _ptr -= n;
           return *this;
         }
-    }
-};
 
+        bool operator<(const Iterator &it) const { return (_ptr < it._ptr); }
+        bool operator>(const Iterator &it) const { return (_ptr > it._ptr); }
+        bool operator<=(const Iterator &it) const { return (_ptr <= it._ptr); }
+        bool operator>=(const Iterator &it) const { return (_ptr >= it._ptr); }
+    };
+
+    Iterator<Item> begin() const;
+    Iterator<Item> end() const;
+};
 #endif

@@ -1,5 +1,4 @@
 #include "Vector.h"
-#include <iostream>
 #include <exception>
 
 template <typename Item>
@@ -134,3 +133,8 @@ int Vector<Item>::removeItem(int lo, int hi)
 }
 template <typename Item>
 int Vector<Item>::removeItem(int rank) { return removeItem(rank, rank + 1); }
+
+template <typename Item>
+Vector<Item>::Iterator<> Vector<Item>::begin() const { return Iterator(_elem); }
+
+Iterator end() const;
